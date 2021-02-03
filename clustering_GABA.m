@@ -1,4 +1,10 @@
-
+%  try
+%     cd(outputdirmean);
+%     save('x_events.mat','xevents_nonempty');
+% catch ME
+%     errorMessage = ME.message;
+%     disp(errorMessage);
+% end
 %Encircling JAABA classifier
 %______________________________
 

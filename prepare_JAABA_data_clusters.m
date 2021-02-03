@@ -1,14 +1,14 @@
-function prepare_JAABA_data_clusters(filename,idlist,outfilename,varargin)
+function [jaabadata_male,jaabadata_female]=prepare_JAABA_data_clusters(filename,idlist,varargin)
 %check for optional key-value-pair arguments
 arguments=varargin;
- options = struct('sex','f','includeOtherFly',true);
+ options = struct('sex','f','includeotherfly',true);
 %call the options_resolver function to check optional key-value pair
 %arguments
 [options,~]=options_resolver(options,arguments,'prepare_JAABA_data_clusters');
 
 %setting the values for optional arguments
 sex = options.sex;
-includeOtherFly = options.includeOtherFly;
+includeOtherFly = options.includeotherfly;
 
 otherFlyIds = arrayfun(@(id) otherid(id), idlist);
 
@@ -45,4 +45,4 @@ end
 end
 
 cd (startdir);
-save(outfilename,'jaabadata_male','jaabadata_female');
+%save(outfilename,'jaabadata_male','jaabadata_female');

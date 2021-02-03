@@ -1,8 +1,29 @@
-function cluster_data(filename,outfilename)
+function cluster_data(filename,outfilename,varargin)
+arguments=varargin;
+ options = struct('both',true,'female',true,'k',10);
+%call the options_resolver function to check optional key-value pair
+%arguments
+[options,~]=options_resolver(options,arguments,'prepare_cluster_data');
+
+%setting the values for optional arguments
+both = options.both;
+female = options.female;
+k=options.k;
 %loading data
 
 load(filename);
+%subsetting
 
+if both
+    comb = vertcat(allFemaleData,allMaleData);
+    jaabadata=cell2struct(cellfun(@vertcat,struct2cell(allJAABADataFemale),struct2cell(allJAABADataMale),'uni',0),fieldnames(allJAABADataFemale),1);
+elseif female
+    comb = allFemaleData;
+    jaabadata=allJAABADataFemale;
+else
+    comb = allMaleData;
+    jaabadata=allJAABADataMale;  
+end
 %scaling
 
 colmin = min(comb(:,1:11));
@@ -18,6 +39,7 @@ TSNE_unscaled=fast_tsne(comb);
 %PCA
 [PCAcoeff,PCAscores,~]=pca(combrescaled);
 % hierarchical clustering
+%very slow - thereofre commented out
 %hierarch_raw = clusterdata(combrescaled,'Linkage','ward','SaveMemory','on','MAXCLUST',10);
 
 %hierarch_pca = clusterdata(PCAscores,'Linkage','ward','SaveMemory','on','MAXCLUST',10);
@@ -25,8 +47,8 @@ TSNE_unscaled=fast_tsne(comb);
 
 
 %KMEANS
-KMEANS_pca=kmeans(PCAscores,10);
-KMEANS_raw=kmeans(combrescaled,10);
+KMEANS_pca=kmeans(PCAscores,k);
+KMEANS_raw=kmeans(combrescaled,k);
 
 
 save(outfilename)
