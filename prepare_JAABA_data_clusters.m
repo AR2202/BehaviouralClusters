@@ -12,6 +12,7 @@ includeOtherFly = options.includeotherfly;
 
 otherFlyIds = arrayfun(@(id) otherid(id), idlist);
 
+
 startdir = pwd;
 jaabafolder = strcat(filename,'_JAABA');
 

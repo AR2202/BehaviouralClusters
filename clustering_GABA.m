@@ -5,6 +5,14 @@
 %     errorMessage = ME.message;
 %     disp(errorMessage);
 % end
+
+% combinedCopScores=vertcat(transpose(copScores9),transpose(copScores10),transpose(copScores11),transpose(copScores12),transpose(copScores19),transpose(copScores20))
+% combinedCircScores=vertcat(transpose(circScores9),transpose(circScores11),transpose(circScores19),transpose(circScores10),transpose(circScores12),transpose(circScores20))
+% combinedApprScores=vertcat(transpose(apprScores9),transpose(apprScores11),transpose(apprScores19),transpose(apprScores10),transpose(apprScores12),transpose(apprScores20))
+% combinedCopScores=vertcat(transpose(copScores9),transpose(copScores11),transpose(copScores19),transpose(copScores10),transpose(copScores12),transpose(copScores20))
+% combinedFacingScores=vertcat(transpose(facingScores19),transpose(facingScores11),transpose(facingScores19),transpose(facingScores10),transpose(facingScores12),transpose(facingScores20))
+% combinedTurnScores=vertcat(transpose(turnScores9),transpose(turnScores11),transpose(turnScores19),transpose(turnScores10),transpose(facingScores12),transpose(turnScores20))
+% combinedCoScores=vertcat(transpose(coScores19),transpose(coScores11),transpose(coScores19),transpose(coScores10),transpose(coScores12),transpose(coScores20))
 %Encircling JAABA classifier
 %______________________________
 

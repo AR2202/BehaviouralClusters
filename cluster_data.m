@@ -3,7 +3,7 @@ arguments=varargin;
  options = struct('both',true,'female',true,'k',10);
 %call the options_resolver function to check optional key-value pair
 %arguments
-[options,~]=options_resolver(options,arguments,'prepare_cluster_data');
+[options,~]=options_resolver(options,arguments,'cluster_data');
 
 %setting the values for optional arguments
 both = options.both;
@@ -49,6 +49,10 @@ TSNE_unscaled=fast_tsne(comb);
 %KMEANS
 KMEANS_pca=kmeans(PCAscores,k);
 KMEANS_raw=kmeans(combrescaled,k);
+isFemale=zeros(length(combrescaled),1);
+if both || female
+    isFemale(1:length(allFemaleData))=1;
+end
 
 
-save(outfilename)
+save(outfilename,'TSNE','TSNE_unscaled','PCAcoeff','PCAscores','KMEANS_pca','KMEANS_raw','comb','combrescaled','jaabadata','isFemale','k')
