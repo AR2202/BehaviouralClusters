@@ -57,16 +57,18 @@ options = statset('UseParallel',parallel);
 MIN=min(X); MAX=max(X); 
 X=(X-MIN)./(MAX-MIN);
 
-
-D=zeros((ToTest+1-kmin),1); %initialize the results matrix
-for c=kmin:ToTest %for each sample
-    [~,~,dist]=kmeans(X,c,'emptyaction','drop','MaxIter',maxiter,'Options',options); %compute the sum of intra-cluster distances
+numTrials = ToTest+1-kmin;
+D=zeros(numTrials,1); %initialize the results matrix
+ks = [kmin:ToTest];
+for c=1:numTrials %for each sample
+    [~,~,dist]=kmeans(X,ks(c),'emptyaction','drop','MaxIter',maxiter,'Options',options); %compute the sum of intra-cluster distances
     tmp=sum(dist); %best so far
     
     for cc=2:Repeats %repeat the algo
-        [~,~,dist]=kmeans(X,c,'emptyaction','drop','MaxIter',maxiter,'Options',options);
+        [~,~,dist]=kmeans(X,ks(c),'emptyaction','drop','MaxIter',maxiter,'Options',options);
         tmp=min(sum(dist),tmp);
     end
+     
     D(c,1)=tmp; %collect the best so far in the results vecor
 end
 
