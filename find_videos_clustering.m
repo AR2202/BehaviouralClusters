@@ -1,4 +1,15 @@
 function find_videos_clustering(genotypelist,genotype,varargin)
+%FIND_VIDEOS_CLUSTERING prepares data from the genotypelist for clustering
+%%%Annika Rings, 2021
+%%%required arguments:
+%%%GENOTYPELIST: a list of flies to be analysed
+%%%gentoype: outputname
+%%%
+%%%optional arguments:
+%%%sex: 'm' or 'f', which fly's id's are specified.
+%%%includeOtherFly: whether the other fly in the chamber should be included
+%%%(even if their id is not specified in genotypelist)
+
 %check for optional key-value-pair arguments
 arguments=varargin;
  options = struct('sex','f','includeOtherFly',true);

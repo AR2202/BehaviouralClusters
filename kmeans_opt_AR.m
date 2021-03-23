@@ -1,6 +1,9 @@
 function [IDX,C,SUMD,K]=kmeans_opt_AR(X,varargin)
 %This is a modified version of kmeans_opt by sebastien de Landtsheer.
 %Modified by Annika Rings, March 2021
+%%%the number of optional arguments was modified to make the function more
+%%%adaptable
+%%%
 
 %%% [IDX,C,SUMD,K]=kmeans_opt(X,varargin) returns the output of the k-means
 %%% algorithm with the optimal number of clusters, as determined by the ELBOW
@@ -27,6 +30,13 @@ function [IDX,C,SUMD,K]=kmeans_opt_AR(X,varargin)
 %%% the variance, taking the best of REPEATS runs of k-means,using MAXITER iterations maximum (default 100).
 %%% [IDX]=kmeans_opt(X,MAX,CUTOFF,REPEATS,MAXITER,PARALLEL) returns the cluster membership for each datapoint in
 %%% vector X. The Elbow method will be tried from 1 to MAX number of
+%%% clusters and will choose the number which explains a fraction CUTOFF of
+%%% the variance, taking the best of REPEATS runs of k-means,using MAXITER
+%%% iterations maximum. If PARALLEL is true, uses parallel computation
+%%% toolbox to run the iterations in parallel (default false).
+%%% [IDX]=kmeans_opt(X,MAX,CUTOFF,REPEATS,MAXITER,PARALLEL,kmin) 
+%%% returns the cluster membership for each datapoint in
+%%% vector X. The Elbow method will be tried from KMIN to MAX number of
 %%% clusters and will choose the number which explains a fraction CUTOFF of
 %%% the variance, taking the best of REPEATS runs of k-means,using MAXITER
 %%% iterations maximum. If PARALLEL is true, uses parallel computation
@@ -76,7 +86,7 @@ Var=D(1:end-1)-D(2:end); %calculate %variance explained
 PC=cumsum(Var)/(D(1)-D(end));
 
 [r,~]=find(PC>Cutoff); %find the best index
-K=1+r(1,1); %get the optimal number of clusters
+K=1+ks(r(1,1)); %get the optimal number of clusters
 [IDX,C,SUMD]=kmeans(X,K,'MaxIter',maxiter,'Options',options); %now rerun one last time with the optimal number of clusters
 
 C=C.*(MAX-MIN)+MIN;

@@ -31,6 +31,8 @@ if includeOtherFly
     filledmissingOtherFly = fillmissing(data_other_fly,'linear');
     lengthdataOther = size(filledmissingOtherFly,1) *(size(filledmissingOtherFly,2));
     reshaped_other = reshape(filledmissingOtherFly,lengthdataOther,11);
+else
+    reshaped_other =[];
 end
 
 if sex == 'f'
@@ -41,7 +43,6 @@ else
     femaleData = reshaped_other;
 end
 
-%save(outfilename,'maleData','femaleData');
 
 
     

@@ -1,12 +1,32 @@
-function tSNEplots(filename,outputname,wavelet)
+function tSNEplots(filename,outputname,wavelet,opt)
+%%%This function is for plotting tSNE with different JAABA classifiers
+%%%The arguments are:
+%%%
+%%%FILENAME: name of the file with clustered and tSNE data
+%%%OUTPUTNAME: name of the outputfile
+%%%wavelet: whether wavelet data should be plotted (bool)
+%%%opt: whether k-optimized kmeans should be used or fixed k value (bool)
 
 load(filename);
 if wavelet
-    KMEANSplot = KMEANS_wavelet;
+    if opt
+        KMEANSplot = KMEANS_opt_wavelet;
+        
+    else
+        
+        KMEANSplot = KMEANS_wavelet;
+    end
     TSNEplot = TSNE_wavelet;
+    
 else
-    KMEANSplot = KMEANS_pca;
+    if opt
+        KMEANSplot = KMEANS_opt_pca;
+        
+        eles
+        KMEANSplot = KMEANS_pca;
+    end
     TSNEplot = TSNE;
+    
 end
 cmap = prism;
 grayscale = flipud(gray);
@@ -40,7 +60,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',3,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(isFemale==0,1),TSNEplot(isFemale==0,2),KMEANSplot(isFemale==0,1),gray,'.',3,'doleg', 'off')
+gscatter(TSNEplot(isFemale_rem_cop==0,1),TSNEplot(isFemale_rem_cop==0,2),KMEANSplot(isFemale_rem_cop==0,1),gray,'.',3,'doleg', 'off')
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -58,7 +78,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',3,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(isFemale==1,1),TSNEplot(isFemale==1,2),KMEANSplot(isFemale==1,1),gray,'.',3,'doleg', 'off')
+gscatter(TSNEplot(isFemale_rem_cop==1,1),TSNEplot(isFemale_rem_cop==1,2),KMEANSplot(isFemale_rem_cop==1,1),gray,'.',3,'doleg', 'off')
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -81,7 +101,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',3,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata.Encircling==1,1),TSNEplot(jaabadata.Encircling==1,2),KMEANSplot(jaabadata.Encircling==1,1),cmap,'.',3,'doleg', 'off')
+gscatter(TSNEplot(jaabadata_rem_cop.Encircling==1,1),TSNEplot(jaabadata_rem_cop.Encircling==1,2),KMEANSplot(jaabadata_rem_cop.Encircling==1,1),cmap,'.',3,'doleg', 'off')
 
 
 xlabel 't-SNE 1'
@@ -106,7 +126,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',3,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata.Facing==1,1),TSNEplot(jaabadata.Facing==1,2),KMEANSplot(jaabadata.Facing==1,1),cmap,'.',3,'doleg', 'off')
+gscatter(TSNEplot(jaabadata_rem_cop.Facing==1,1),TSNEplot(jaabadata_rem_cop.Facing==1,2),KMEANSplot(jaabadata_rem_cop.Facing==1,1),cmap,'.',3,'doleg', 'off')
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -127,7 +147,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',3,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata.WingGesture==1,1),TSNEplot(jaabadata.WingGesture==1,2),KMEANSplot(jaabadata.WingGesture==1,1),cmap,'.',3,'doleg', 'off')
+gscatter(TSNEplot(jaabadata_rem_cop.WingGesture==1,1),TSNEplot(jaabadata_rem_cop.WingGesture==1,2),KMEANSplot(jaabadata_rem_cop.WingGesture==1,1),cmap,'.',3,'doleg', 'off')
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -148,7 +168,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',3,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata.Copulation==1,1),TSNEplot(jaabadata.Copulation==1,2),KMEANSplot(jaabadata.Copulation==1,1),cmap,'.',3,'doleg', 'off')
+gscatter(TSNEplot(jaabadata_rem_cop.Copulation==1,1),TSNEplot(jaabadata_rem_cop.Copulation==1,2),KMEANSplot(jaabadata_rem_cop.Copulation==1,1),cmap,'.',3,'doleg', 'off')
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -166,7 +186,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',3,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata.Approaching==1,1),TSNEplot(jaabadata.Approaching==1,2),KMEANSplot(jaabadata.Approaching==1,1),cmap,'.',3,'doleg', 'off')
+gscatter(TSNEplot(jaabadata_rem_cop.Approaching==1,1),TSNEplot(jaabadata_rem_cop.Approaching==1,2),KMEANSplot(jaabadata_rem_cop.Approaching==1,1),cmap,'.',3,'doleg', 'off')
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -187,7 +207,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',3,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata.Turning==1,1),TSNEplot(jaabadata.Turning==1,2),KMEANSplot(jaabadata.Turning==1,1),cmap,'.',3,'doleg', 'off')
+gscatter(TSNEplot(jaabadata_rem_cop.Turning==1,1),TSNEplot(jaabadata_rem_cop.Turning==1,2),KMEANSplot(jaabadata_rem_cop.Turning==1,1),cmap,'.',3,'doleg', 'off')
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -206,7 +226,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',3,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata.Contact==1,1),TSNEplot(jaabadata.Contact==1,2),KMEANSplot(jaabadata.Contact==1,1),cmap,'.',3,'doleg', 'off')
+gscatter(TSNEplot(jaabadata_rem_cop.Contact==1,1),TSNEplot(jaabadata_rem_cop.Contact==1,2),KMEANSplot(jaabadata_rem_cop.Contact==1,1),cmap,'.',3,'doleg', 'off')
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
