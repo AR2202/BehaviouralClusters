@@ -22,12 +22,14 @@ else
     if opt
         KMEANSplot = KMEANS_opt_pca;
         
-        eles
+    else
         KMEANSplot = KMEANS_pca;
     end
     TSNEplot = TSNE;
     
 end
+genotypes = unique(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2)));
+
 cmap = prism;
 grayscale = flipud(gray);
 %---------------------
@@ -232,3 +234,22 @@ ylabel 't-SNE 2'
 
 figname = strcat('tSNE_Kmeans_contact',outputname,'.eps');
 saveas(fignew,figname,'epsc');
+
+%Kmeans clustering with genotypes
+%----------------------------------
+
+for g = 1:size(genotypes)
+    genotype = genotypes(g);
+    
+    fignew=figure('Name',strcat('t-SNE with Kmeans clustering and genotype',num2str(genotype)));
+    gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',3,'doleg', 'off')
+    
+    hold 'on'
+    
+    gscatter(TSNEplot(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2))==genotype,1),TSNEplot(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2))==genotype,2),KMEANSplot(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2))==genotype,1),cmap,'.',3,'doleg', 'off')
+    xlabel 't-SNE 1'
+    ylabel 't-SNE 2'
+    
+    figname = strcat('tSNE_Kmeans_genotype',num2str(genotype),outputname,'.eps');
+    saveas(fignew,figname,'epsc');
+end

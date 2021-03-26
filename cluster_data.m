@@ -64,6 +64,11 @@ replicates = options.replicates;
 
 load(filename);
 
+%set numfeatures to be the size of the feature vector, unless a smaller
+%number is specified
+
+numfeatures = min(options.numfeatures,size(comb,2));
+numpcs = min(options.numpcs,size(comb,2));
 %subsetting
 
 if both
@@ -76,7 +81,7 @@ else
     comb1 = allMaleData;
     jaabadata1=allJAABADataMale;
 end
-genotypeColumn = repelem(k, length(comb1));
+genotypeColumn = repelem(f, length(comb1));
 comb1 = [comb1 transpose(genotypeColumn)];
 comb = vertcat(comb,comb1);
 if exist ('jaabadata','var')
@@ -85,10 +90,7 @@ if exist ('jaabadata','var')
                     jaabadata=jaabadata1;
 end
 end
-%set numfeatures to be the size of the feature vector, unless a smaller
-%number is specified
-numfeatures = min(options.numfeatures,size(comb,2));
-numpcs = min(options.numpcs,size(comb,2));
+
 %scaling
 
 colmin = min(comb(:,1:numfeatures));
@@ -115,9 +117,9 @@ end
 %which together explain ~99% of the variance
 
 %Prepare PCAscores for Morlet wavelet transform
-
+combrescaled = [combrescaled comb(:,size(comb,2))];
 PCAscores_reshaped = reshape(PCAscores,[],framesPerFly,numfeatures);
-wavelets = zeros(size(PCAscores_reshaped,1),size(PCAscores_reshaped,2),42);
+
 numflies = size(PCAscores_reshaped,1);
 
 %Morlet Wavelet transforms
@@ -127,7 +129,8 @@ numflies = size(PCAscores_reshaped,1);
 %https://github.com/gordonberman/MotionMapper
 morlet_frequencies=[2,4,6,8,10,12]; %6 evenly spaced frequencies,
 %the largest being the Nyquis frequency
-amp = zeros(6*numpcs,length(PCAscores_reshaped));
+wavelets = zeros(size(PCAscores_reshaped,1),size(PCAscores_reshaped,2),length(morlet_frequencies)*numpcs);
+amp = zeros(length(morlet_frequencies)*numpcs,length(PCAscores_reshaped));
 omega = 5;
 samplingrate = 1/framerate;
 
@@ -144,7 +147,7 @@ wavelets_reshaped = reshape(wavelets,(size(wavelets,1)*size(wavelets,2)),size(wa
 
 isCopulationframe = jaabadata.Copulation;
 isCopulationframe = [isCopulationframe; zeros( length(combrescaled) - length(isCopulationframe),1)];
-isCopulationframe_reshaped = reshape(isCopulationframe,framesPerFly,[]);
+isCopulationframe_reshaped = reshape(isCopulationframe,[],framesPerFly);
 for i=1:numflies
     tmp_data=isCopulationframe_reshaped(:,i);
     tmp_data=movmean(tmp_data,1250)>0.5;
@@ -169,19 +172,19 @@ end
 %second argument is kmax
 
 [KMEANS_opt_pca,~,~,K_pca]=kmeans_opt_AR(PCAscores_rem_cop(:,1:numpcs),kmax,0.95,replicates,maxiter,true,kmin);
-[KMEANS_opt_raw,~,~,K_raw]=kmeans_opt_AR(combrescaled_rem_cop,kmax,0.95,replicates,maxiter,true,kmin);
+[KMEANS_opt_raw,~,~,K_raw]=kmeans_opt_AR(combrescaled_rem_cop(:,1:numfeatures),kmax,0.95,replicates,maxiter,true,kmin);
 [KMEANS_opt_wavelet,~,~,K_wavelet]=kmeans_opt_AR(wavelets_rem_cop,kmax,0.95,replicates,maxiter,true,kmin);
 
 %KMEANS with user-specified k
 options = statset('UseParallel',1);
 KMEANS_pca=kmeans(PCAscores_rem_cop(:,1:numpcs),k,'Options',options,'MaxIter',maxiter);
-KMEANS_raw=kmeans(combrescaled_rem_cop,k,'Options',options,'MaxIter',maxiter);
+KMEANS_raw=kmeans(combrescaled_rem_cop(:,1:numfeatures),k,'Options',options,'MaxIter',maxiter);
 KMEANS_wavelet=kmeans(wavelets_rem_cop,k,'Options',options,'MaxIter',maxiter);
 
 
 
 %TSNE
-TSNE=fast_tsne(combrescaled_rem_cop);
+TSNE=fast_tsne(combrescaled_rem_cop(:,1:numfeatures));
 TSNE_wavelet=fast_tsne(wavelets_rem_cop);
 
 %saving

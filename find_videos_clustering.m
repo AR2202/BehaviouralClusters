@@ -12,7 +12,7 @@ function find_videos_clustering(genotypelist,genotype,varargin)
 
 %check for optional key-value-pair arguments
 arguments=varargin;
- options = struct('sex','f','includeOtherFly',true);
+ options = struct('sex','f','includeotherfly',true);
 %call the options_resolver function to check optional key-value pair
 %arguments
 [options,~]=options_resolver(options,arguments,'find_videos_clustering');
@@ -71,8 +71,8 @@ for p = 1:numel(dirs)
                 disp(strtofind);
                 
                 ids = transpose(newtable3.Var2);
-                [maleData,femaleData]=prepare_cluster_data(strtofind,ids,'sex',sex,'includeOtherFly',includeOtherFly);
-                [jaabadata_male,jaabadata_female]=prepare_JAABA_data_clusters(strtofind,ids,'sex',sex,'includeOtherFly',includeOtherFly);
+                [maleData,femaleData]=prepare_cluster_data(strtofind,ids,'sex',sex,'includeotherfly',includeOtherFly);
+                [jaabadata_male,jaabadata_female]=prepare_JAABA_data_clusters(strtofind,ids,'sex',sex,'includeotherfly',includeOtherFly);
                 allMaleData = vertcat(allMaleData,maleData);
                 allFemaleData = vertcat(allFemaleData,femaleData);
                 scorenames_m = fieldnames(jaabadata_male);
