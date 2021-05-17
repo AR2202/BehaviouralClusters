@@ -12,16 +12,18 @@ function find_videos_clustering(genotypelist,genotype,varargin)
 
 %check for optional key-value-pair arguments
 arguments=varargin;
- options = struct('sex','f','includeotherfly',true);
+ options = struct('sex','f','includeotherfly',true,'includejaabadata',true);
 %call the options_resolver function to check optional key-value pair
 %arguments
 [options,~]=options_resolver(options,arguments,'find_videos_clustering');
 
 %setting the values for optional arguments
 sex = options.sex;
-includeOtherFly = options.includeOtherFly;
+includeOtherFly = options.includeotherfly;
+includeJAABAData = options.includejaabadata;
 
 outputtable=readtable(genotypelist,'readvariablenames',false);
+disp(outputtable);
 outputvar2=arrayfun(@(input) input,outputtable.Var2);
 Var4=arrayfun(@(var2)var2-(~isOdd(var2))+(isOdd(var2)),outputvar2);
 cellVar4=arrayfun(@(var2)var2-(~isOdd(var2))+(isOdd(var2)),outputvar2,'uni',false);
@@ -72,9 +74,11 @@ for p = 1:numel(dirs)
                 
                 ids = transpose(newtable3.Var2);
                 [maleData,femaleData]=prepare_cluster_data(strtofind,ids,'sex',sex,'includeotherfly',includeOtherFly);
-                [jaabadata_male,jaabadata_female]=prepare_JAABA_data_clusters(strtofind,ids,'sex',sex,'includeotherfly',includeOtherFly);
                 allMaleData = vertcat(allMaleData,maleData);
                 allFemaleData = vertcat(allFemaleData,femaleData);
+                if includeJAABAData
+                [jaabadata_male,jaabadata_female]=prepare_JAABA_data_clusters(strtofind,ids,'sex',sex,'includeotherfly',includeOtherFly);
+                
                 scorenames_m = fieldnames(jaabadata_male);
                 scorenames_f = fieldnames(jaabadata_female);
                 if exist ('allJAABADataMale','var')
@@ -93,6 +97,7 @@ for p = 1:numel(dirs)
                 end
                 end
             end
+            end
              
         end
          cd(startdir);
@@ -101,4 +106,8 @@ for p = 1:numel(dirs)
 
 fullfigname=strcat(genotype,'_clusterdata');
 datafilename=strcat(fullfigname,'.mat');
+if includeJAABAData
 save(datafilename,'allMaleData','allFemaleData','allJAABADataMale','allJAABADataFemale');
+else
+    save(datafilename,'allMaleData','allFemaleData');
+end
