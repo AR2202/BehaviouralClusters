@@ -59,7 +59,11 @@ for filenumber = 1:length(filenames)
     find_videos_clustering(genotypelist,genotype,...
         'includeotherfly',false,'includejaabadata',false);
 end
-
-    cluster_data(clusterdatafiles,'sim_sech.mat',...
+%perform clustering with 7 principle components
+    cluster_data(clusterdatafiles,'sim_sech_7pcs.mat',...
         'kmin',5, 'kmax',30,'both',false);
+    %perform clustering with 4 principle components (all those that explain >10%
+    %of the variance, and together >90%)
+    cluster_data(clusterdatafiles,'sim_sech_4pcs.mat',...
+        'kmin',5, 'kmax',30,'both',false,'numpcs',7);
 

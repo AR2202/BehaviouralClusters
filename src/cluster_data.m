@@ -77,11 +77,7 @@ else
     
 end
     
-%set numfeatures to be the size of the feature vector, unless a smaller
-%number is specified
 
-numfeatures = min(options.numfeatures,size(comb,2));
-numpcs = min(options.numpcs,size(comb,2));
 %subsetting
 
 if both
@@ -105,7 +101,11 @@ if exist ('jaabadata','var')
                     jaabadata=jaabadata1;
 end
 end
+%set numfeatures to be the size of the feature vector, unless a smaller
+%number is specified
 
+numfeatures = min(options.numfeatures,size(comb,2));
+numpcs = min(options.numpcs,size(comb,2));
 %scaling
 
 colmin = min(comb(:,1:numfeatures));
