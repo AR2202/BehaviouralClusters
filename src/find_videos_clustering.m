@@ -12,7 +12,8 @@ function find_videos_clustering(genotypelist,genotype,varargin)
 
 %check for optional key-value-pair arguments
 arguments=varargin;
- options = struct('sex','f','includeotherfly',true,'includejaabadata',true);
+options = struct('sex','f','includeotherfly',true,'includejaabadata',true,...
+    'framesperfly',22500);
 %call the options_resolver function to check optional key-value pair
 %arguments
 [options,~]=options_resolver(options,arguments,'find_videos_clustering');
@@ -21,6 +22,9 @@ arguments=varargin;
 sex = options.sex;
 includeOtherFly = options.includeotherfly;
 includeJAABAData = options.includejaabadata;
+framesPerFly = options.framesperfly;
+
+includeThisJAABA = true;
 
 outputtable=readtable(genotypelist,'readvariablenames',false);
 disp(outputtable);
@@ -49,9 +53,9 @@ for p = 1:numel(dirs)
     videos=cellfun(@(list)dir(char(strcat('*',list))),unique(outputtable.Var1),'UniformOutput',false);
     
     videonames=cellfun(@(struct)arrayfun(@(indiv) indiv.name(indiv.isdir==1,:),struct,'UniformOutput',false),videos,'UniformOutput',false);
-   
+    
     videonames=videonames(~cellfun(@isempty,videonames));
-   
+    
     
     if size(videonames,2)>0
         for q = 1:size(videonames,1)
@@ -61,9 +65,9 @@ for p = 1:numel(dirs)
                 cd(videonames{q}{1});
                 variablename_video=regexprep(videonames{q}{1},'(\w+)-(\w+)_Courtship-','');
                 disp(variablename_video);
-               
+                
                 newtable2=outputtable(cellfun(@(x) contains(videonames{q}{1},x), outputtable.Var1),:);
-               
+                
                 newtable3=newtable2;
                 disp(newtable3);
                 
@@ -74,40 +78,45 @@ for p = 1:numel(dirs)
                 
                 ids = transpose(newtable3.Var2);
                 [maleData,femaleData]=prepare_cluster_data(strtofind,ids,'sex',sex,'includeotherfly',includeOtherFly);
+                if mod(length(maleData)+length(femaleData),framesPerFly) ~=0
+                    maleData = [];
+                    femaleData = [];
+                    includeThisJAABA = false;
+                end
                 allMaleData = vertcat(allMaleData,maleData);
                 allFemaleData = vertcat(allFemaleData,femaleData);
-                if includeJAABAData
-                [jaabadata_male,jaabadata_female]=prepare_JAABA_data_clusters(strtofind,ids,'sex',sex,'includeotherfly',includeOtherFly);
-                
-                scorenames_m = fieldnames(jaabadata_male);
-                scorenames_f = fieldnames(jaabadata_female);
-                if exist ('allJAABADataMale','var')
-                    allJAABADataMale = cell2struct(cellfun(@vertcat,struct2cell(allJAABADataMale),struct2cell(jaabadata_male),'uni',0),fieldnames(jaabadata_male),1);
-                else 
-                    allJAABADataMale=jaabadata_male;
-                
-                
-                end
-                if exist ('allJAABADataFemale','var')
-                    allJAABADataFemale = cell2struct(cellfun(@vertcat,struct2cell(allJAABADataFemale),struct2cell(jaabadata_female),'uni',0),fieldnames(jaabadata_female),1);
-                else 
-                    allJAABADataFemale=jaabadata_female;
-                
-               
-                end
+                if (includeJAABAData && includeThisJAABA)
+                    [jaabadata_male,jaabadata_female]=prepare_JAABA_data_clusters(strtofind,ids,'sex',sex,'includeotherfly',includeOtherFly);
+                    
+                    scorenames_m = fieldnames(jaabadata_male);
+                    scorenames_f = fieldnames(jaabadata_female);
+                    if exist ('allJAABADataMale','var')
+                        allJAABADataMale = cell2struct(cellfun(@vertcat,struct2cell(allJAABADataMale),struct2cell(jaabadata_male),'uni',0),fieldnames(jaabadata_male),1);
+                    else
+                        allJAABADataMale=jaabadata_male;
+                        
+                        
+                    end
+                    if exist ('allJAABADataFemale','var')
+                        allJAABADataFemale = cell2struct(cellfun(@vertcat,struct2cell(allJAABADataFemale),struct2cell(jaabadata_female),'uni',0),fieldnames(jaabadata_female),1);
+                    else
+                        allJAABADataFemale=jaabadata_female;
+                        
+                        
+                    end
                 end
             end
-            end
-             
         end
-         cd(startdir);
+        
     end
-   
+    cd(startdir);
+end
+
 
 fullfigname=strcat(genotype,'_clusterdata');
 datafilename=strcat(fullfigname,'.mat');
 if includeJAABAData
-save(datafilename,'allMaleData','allFemaleData','allJAABADataMale','allJAABADataFemale');
+    save(datafilename,'allMaleData','allFemaleData','allJAABADataMale','allJAABADataFemale');
 else
     save(datafilename,'allMaleData','allFemaleData');
 end

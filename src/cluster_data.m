@@ -34,6 +34,7 @@ function cluster_data(filelist,outfilename,varargin)
 %dependencies:
 %Berman et al 2014 MotionMapper
 %https://github.com/gordonberman/MotionMapper
+
 comb=[];
 for f=1:numel(filelist)
     filename = filelist{f};
@@ -43,6 +44,7 @@ arguments=varargin;
 options = struct('both',true,'female',true,'k',10,'kmin',1,...
     'kmax',50,'maxiter',1000,'framerate',25,'framesperfly',22500,...
     'numfeatures',11,'numpcs',7,'replicates',3);
+
 %call the options_resolver function to check optional key-value pair
 %arguments
 [options,~]=options_resolver(options,arguments,'cluster_data');
@@ -52,7 +54,6 @@ both = options.both;
 female = options.female;
 k=options.k;
 kmin=options.kmin;
-
 kmax=options.kmax;
 maxiter=options.maxiter;
 framerate = options.framerate;
@@ -64,6 +65,18 @@ replicates = options.replicates;
 
 load(filename);
 
+%check if the file that was loaded contains JAABA data
+%if not, create an empty structure for the JAABA copulation classifier
+
+containsJAABAData = false;
+if exist ('allJAABADataFemale','var')
+    containsJAABAData = true;
+else
+    allJAABADataFemale.Copulation = [];
+    allJAABADataMale.Copulation = [];
+    
+end
+    
 %set numfeatures to be the size of the feature vector, unless a smaller
 %number is specified
 
@@ -73,7 +86,8 @@ numpcs = min(options.numpcs,size(comb,2));
 
 if both
     comb1 = vertcat(allFemaleData,allMaleData);
-    jaabadata1=cell2struct(cellfun(@vertcat,struct2cell(allJAABADataFemale),struct2cell(allJAABADataMale),'uni',0),fieldnames(allJAABADataFemale),1);
+    jaabadata1=cell2struct(cellfun(@vertcat,struct2cell(allJAABADataFemale),...
+        struct2cell(allJAABADataMale),'uni',0),fieldnames(allJAABADataFemale),1);
 elseif female
     comb1 = allFemaleData;
     jaabadata1=allJAABADataFemale;
@@ -85,7 +99,8 @@ genotypeColumn = repelem(f, length(comb1));
 comb1 = [comb1 transpose(genotypeColumn)];
 comb = vertcat(comb,comb1);
 if exist ('jaabadata','var')
-                    jaabadata = cell2struct(cellfun(@vertcat,struct2cell(jaabadata),struct2cell(jaabadata1),'uni',0),fieldnames(jaabadata1),1);
+                    jaabadata = cell2struct(cellfun(@vertcat,struct2cell(jaabadata),...
+                        struct2cell(jaabadata1),'uni',0),fieldnames(jaabadata1),1);
                 else 
                     jaabadata=jaabadata1;
 end
@@ -106,8 +121,9 @@ end
 
 %PCA
 [PCAcoeff,PCAscores,~,~,explained]=pca(combrescaled);
+
 % hierarchical clustering
-%very slow - thereofre commented out
+%very slow - therefore commented out
 %hierarch_raw = clusterdata(combrescaled,'Linkage','ward','SaveMemory','on','MAXCLUST',10);
 
 %hierarch_pca = clusterdata(PCAscores,'Linkage','ward','SaveMemory','on','MAXCLUST',10);
@@ -127,8 +143,9 @@ numflies = size(PCAscores_reshaped,1);
 %https://royalsocietypublishing.org/doi/full/10.1098/rsif.2014.0672#d3e789
 %requires their MotionMapper package
 %https://github.com/gordonberman/MotionMapper
+
 morlet_frequencies=[2,4,6,8,10,12]; %6 evenly spaced frequencies,
-%the largest being the Nyquis frequency
+%the largest being the Nyquist frequency
 wavelets = zeros(size(PCAscores_reshaped,1),size(PCAscores_reshaped,2),length(morlet_frequencies)*numpcs);
 amp = zeros(length(morlet_frequencies)*numpcs,length(PCAscores_reshaped));
 omega = 5;
