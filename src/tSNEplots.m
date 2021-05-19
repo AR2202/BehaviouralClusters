@@ -1,4 +1,4 @@
-function tSNEplots(filename,outputname,wavelet,opt)
+function tSNEplots(filename,outputname,wavelet,opt,withJAABA)
 %%%This function is for plotting tSNE with different JAABA classifiers
 %%%The arguments are:
 %%%
@@ -6,6 +6,7 @@ function tSNEplots(filename,outputname,wavelet,opt)
 %%%OUTPUTNAME: name of the outputfile
 %%%wavelet: whether wavelet data should be plotted (bool)
 %%%opt: whether k-optimized kmeans should be used or fixed k value (bool)
+%%%withJAABA: whether plots of JAABA classifiers should be included in plot
 
 load(filename);
 if wavelet
@@ -88,10 +89,11 @@ ylabel 't-SNE 2'
 figname = strcat('tSNE_Kmeans_female',outputname,'.eps');
 saveas(fignew,figname,'epsc');
 
+
 %---------------------
-
+% JAABA classifier plots
 %----------------------------------------------
-
+if withJAABA
 %Encircling JAABA classifier
 %______________________________
 
@@ -234,7 +236,8 @@ ylabel 't-SNE 2'
 
 figname = strcat('tSNE_Kmeans_contact',outputname,'.eps');
 saveas(fignew,figname,'epsc');
-
+end
+%------------------------------------
 %Kmeans clustering with genotypes
 %----------------------------------
 

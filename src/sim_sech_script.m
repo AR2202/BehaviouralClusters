@@ -2,7 +2,7 @@
 
 %This is a script which runs the Clustering analysis on a specific dataset
 %of simulans and secheillia data
-%This is not a generic reusable script but can be used as a template 
+%This is not a generic reusable script but can be used as a template
 
 %paths to scripts
 path_to_Clustering ='/home/goodwintracking/AnnikasClusteringScripts/';
@@ -53,17 +53,35 @@ for filenumber = 1:length(filenames)
     %shoving
     find_videos_fraction(genotypelist,'fraction','shoving',genotype);
     %clustering
-
+    
     %jaaba data not included because there are some missing data - can be
     %updated once the tracking has produced all jaaba data
     find_videos_clustering(genotypelist,genotype,...
         'includeotherfly',false,'includejaabadata',false);
 end
 %perform clustering with 7 principle components
-    cluster_data(clusterdatafiles,'sim_sech_7pcs.mat',...
-        'kmin',5, 'kmax',30,'both',false);
-    %perform clustering with 4 principle components (all those that explain >10%
-    %of the variance, and together >90%)
-    cluster_data(clusterdatafiles,'sim_sech_4pcs.mat',...
-        'kmin',5, 'kmax',30,'both',false,'numpcs',7);
+cluster_data(clusterdatafiles,'sim_sech_7pcs.mat',...
+    'kmin',5, 'kmax',30,'both',false);
 
+%perform clustering with 4 principle components (all those that explain >10%
+%of the variance, and together >90%)
+cluster_data(clusterdatafiles,'sim_sech_4pcs.mat',...
+    'kmin',5, 'kmax',30,'both',false,'numpcs',7);
+%creating the tSNEplots 7PCs
+tSNEplots('sim_sech_7pcs.mat','sim_sech_7pcs',false,true,false)
+%creating the tSNEplots 7PCs from wavelet transformed data
+tSNEplots('sim_sech_7pcs.mat','sim_sech_7pcs_wavelet',true,true,false)
+%creating the tSNEplots 4PCs
+tSNEplots('sim_sech_4pcs.mat','sim_sech_4pcs',false,true,false)
+%creating the tSNEplots 4PCs from wavelet transformed data
+tSNEplots('sim_sech_4pcs.mat','sim_sech_4pcs_wavelet',true,true,false)
+
+%plotting the features for each cluster
+%7PCs
+clustermarkers('sim_sech_7pcs.mat','sim_sech_7pcs',false,true)
+%7PCs wavelet
+clustermarkers('sim_sech_7pcs.mat','sim_sech_7pcs_wavelet',true,true)
+%4PCs
+clustermarkers('sim_sech_4pcs.mat','sim_sech_4pcs',false,true)
+%4PCs wavelet
+clustermarkers('sim_sech_4pcs.mat','sim_sech_4pcs_wavelet',true,true)
