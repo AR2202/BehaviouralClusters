@@ -28,17 +28,22 @@ filenames = {filename_a2a2b_a2a2b,filename_sim13_sim13,...
 
 cd (datapath);
 %run the pausing function
+disp('Now running pausing...');
+
 pausing();
 %chasing
+disp('Now running chasing...');
 run_fraction('chasing',11,'cutoff',(5*pi/6),'below',true,...
     'wingextonly',false,'additional',12,...
     'additional_cutoff',(pi/6),'additional_below',true);
 %shoving
+disp('Now running shoving...');
 run_fraction('shoving',11,'cutoff',(5*pi/6),'wingextonly',false,...
     'additional',12,'additional_cutoff',(pi/6),'additional_below',true);
 
 %run data preparation script
 clusterdatafiles = {};
+disp('Now preparing clusterdata...');
 for filenumber = 1:length(filenames)
     genotypelist = filenames{filenumber};
     genotype = strrep(genotypelist,'.xlsx','');
@@ -60,14 +65,17 @@ for filenumber = 1:length(filenames)
         'includeotherfly',false,'includejaabadata',false);
 end
 %perform clustering with 7 principle components
+disp('Now running clustering with 7 PCs...');
 cluster_data(clusterdatafiles,'sim_sech_7pcs.mat',...
     'kmin',5, 'kmax',30,'both',false);
 
 %perform clustering with 4 principle components (all those that explain >10%
 %of the variance, and together >90%)
+disp('Now running clustering with 4 PCs...');
 cluster_data(clusterdatafiles,'sim_sech_4pcs.mat',...
     'kmin',5, 'kmax',30,'both',false,'numpcs',7);
 %creating the tSNEplots 7PCs
+disp('Now creating tSNEplots...');
 tSNEplots('sim_sech_7pcs.mat','sim_sech_7pcs',false,true,false)
 %creating the tSNEplots 7PCs from wavelet transformed data
 tSNEplots('sim_sech_7pcs.mat','sim_sech_7pcs_wavelet',true,true,false)
@@ -77,6 +85,7 @@ tSNEplots('sim_sech_4pcs.mat','sim_sech_4pcs',false,true,false)
 tSNEplots('sim_sech_4pcs.mat','sim_sech_4pcs_wavelet',true,true,false)
 
 %plotting the features for each cluster
+disp('Now analysing clustermarkers...');
 %7PCs
 clustermarkers('sim_sech_7pcs.mat','sim_sech_7pcs',false,true)
 %7PCs wavelet
