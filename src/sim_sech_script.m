@@ -30,7 +30,7 @@ cd (datapath);
 %run the pausing function
 disp('Now running pausing...');
 
-pausing();
+pausing_smaller_chamber();
 %chasing
 disp('Now running chasing...');
 run_fraction('chasing',11,'cutoff',(5*pi/6),'below',true,...
