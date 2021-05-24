@@ -67,13 +67,13 @@ end
 %perform clustering with 7 principle components
 disp('Now running clustering with 7 PCs...');
 cluster_data(clusterdatafiles,'sim_sech_7pcs.mat',...
-    'kmin',5, 'kmax',30,'both',false);
+    'kmin',1, 'kmax',30,'both',false);
 
 %perform clustering with 4 principle components (all those that explain >10%
 %of the variance, and together >90%)
 disp('Now running clustering with 4 PCs...');
 cluster_data(clusterdatafiles,'sim_sech_4pcs.mat',...
-    'kmin',5, 'kmax',30,'both',false,'numpcs',7);
+    'kmin',1, 'kmax',30,'both',false,'numpcs',4);
 %creating the tSNEplots 7PCs
 disp('Now creating tSNEplots...');
 tSNEplots('sim_sech_7pcs.mat','sim_sech_7pcs',false,true,false)
