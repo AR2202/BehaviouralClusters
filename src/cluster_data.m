@@ -43,7 +43,7 @@ for f=1:numel(filelist)
 arguments=varargin;
 options = struct('both',true,'female',true,'k',10,'kmin',1,...
     'kmax',50,'maxiter',1000,'framerate',25,'framesperfly',22500,...
-    'numfeatures',11,'numpcs',7,'replicates',3);
+    'numfeatures',11,'numpcs',7,'replicates',3,'perplexity',50,'theta',0.5,'exaggeration',5);
 
 %call the options_resolver function to check optional key-value pair
 %arguments
@@ -59,6 +59,9 @@ maxiter=options.maxiter;
 framerate = options.framerate;
 framesPerFly = options.framesperfly;
 replicates = options.replicates;
+perplexity = options.perplexity;
+theta = options.theta;
+exaggeration = options.exaggeration;
 
 
 %loading data
@@ -201,8 +204,11 @@ KMEANS_wavelet=kmeans(wavelets_rem_cop,k,'Options',options,'MaxIter',maxiter);
 
 
 %TSNE
-TSNE=fast_tsne(combrescaled_rem_cop(:,1:numfeatures));
-TSNE_wavelet=fast_tsne(wavelets_rem_cop);
+opts.early_exag_coeff = exaggeration;
+opts.perplexity = perplexity;
+opts.theta = theta;
+TSNE=fast_tsne(combrescaled_rem_cop(:,1:numfeatures),opts);
+TSNE_wavelet=fast_tsne(wavelets_rem_cop,opts);
 
 %saving
 
