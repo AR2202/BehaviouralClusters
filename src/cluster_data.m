@@ -43,7 +43,7 @@ for f=1:numel(filelist)
 arguments=varargin;
 options = struct('both',true,'female',true,'k',10,'kmin',1,...
     'kmax',50,'maxiter',1000,'framerate',25,'framesperfly',22500,...
-    'numfeatures',11,'numpcs',7,'replicates',3,'perplexity',50,'theta',0.5,'exaggeration',5);
+    'numfeatures',11,'numpcs',7,'replicates',3,'perplexity',50,'theta',0.5,'exaggeration',5,'includewavelet',true);
 
 %call the options_resolver function to check optional key-value pair
 %arguments
@@ -62,6 +62,7 @@ replicates = options.replicates;
 perplexity = options.perplexity;
 theta = options.theta;
 exaggeration = options.exaggeration;
+includewavelet = options.includewavelet;
 
 
 %loading data
@@ -69,7 +70,8 @@ exaggeration = options.exaggeration;
 load(filename);
 
 %check if the file that was loaded contains JAABA data
-%if not, create an empty structure for the JAABA copulation classifier
+%if not, create an empty structure for
+%the JAABA copulation classifier
 
 containsJAABAData = false;
 if exist ('allJAABADataFemale','var')
@@ -193,29 +195,40 @@ end
 
 [KMEANS_opt_pca,~,~,K_pca]=kmeans_opt_AR(PCAscores_rem_cop(:,1:numpcs),kmax,0.95,replicates,maxiter,true,kmin);
 [KMEANS_opt_raw,~,~,K_raw]=kmeans_opt_AR(combrescaled_rem_cop(:,1:numfeatures),kmax,0.95,replicates,maxiter,true,kmin);
-[KMEANS_opt_wavelet,~,~,K_wavelet]=kmeans_opt_AR(wavelets_rem_cop,kmax,0.95,replicates,maxiter,true,kmin);
-
+if includewavelet
+    [KMEANS_opt_wavelet,~,~,K_wavelet]=kmeans_opt_AR(wavelets_rem_cop,kmax,0.95,replicates,maxiter,true,kmin);
+end
 %KMEANS with user-specified k
 options = statset('UseParallel',1);
 KMEANS_pca=kmeans(PCAscores_rem_cop(:,1:numpcs),k,'Options',options,'MaxIter',maxiter);
 KMEANS_raw=kmeans(combrescaled_rem_cop(:,1:numfeatures),k,'Options',options,'MaxIter',maxiter);
+if includewavelet
 KMEANS_wavelet=kmeans(wavelets_rem_cop,k,'Options',options,'MaxIter',maxiter);
-
+end
 
 
 %TSNE
 opts.early_exag_coeff = exaggeration;
 opts.perplexity = perplexity;
 opts.theta = theta;
-TSNE=fast_tsne(combrescaled_rem_cop(:,1:numfeatures),opts);
+%TSNE=fast_tsne(combrescaled_rem_cop(:,1:numfeatures),opts);
+TSNE=fast_tsne(PCAscores_rem_cop(:,1:numpcs),opts);
+if includewavelet
 TSNE_wavelet=fast_tsne(wavelets_rem_cop,opts);
-
+end
 %saving
 
-
-save(outfilename,'TSNE','TSNE_wavelet','PCAcoeff','PCAscores',...
+if includewavelet
+    save(outfilename,'TSNE','PCAcoeff','PCAscores',...
     'KMEANS_pca','KMEANS_raw','comb','combrescaled','jaabadata','isFemale',...
     'isFemale_rem_cop','k','KMEANS_opt_pca','KMEANS_opt_raw','K_raw',...
-    'K_pca','explained','KMEANS_wavelet','wavelets','wavelets_rem_cop',...
+    'K_pca','explained','wavelets','wavelets_rem_cop',...
     'PCAscores_rem_cop','combrescaled_rem_cop','jaabadata_rem_cop',...
-    'KMEANS_opt_wavelet','K_wavelet')
+    'TSNE_wavelet','KMEANS_wavelet', 'KMEANS_opt_wavelet','K_wavelet')
+else
+save(outfilename,'TSNE','PCAcoeff','PCAscores',...
+    'KMEANS_pca','KMEANS_raw','comb','combrescaled','jaabadata','isFemale',...
+    'isFemale_rem_cop','k','KMEANS_opt_pca','KMEANS_opt_raw','K_raw',...
+    'K_pca','explained','wavelets','wavelets_rem_cop',...
+    'PCAscores_rem_cop','combrescaled_rem_cop','jaabadata_rem_cop')
+end

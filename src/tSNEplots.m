@@ -60,7 +60,7 @@ genotypes = unique(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2)));
 %     0.2 0.8 0.4
 %     0.8 1 0.4
 %     0.3 0.2 0.5
-%]
+% ]
 cmap = prism;
 grayscale = flipud(gray);
 %---------------------
@@ -70,8 +70,9 @@ grayscale = flipud(gray);
 
 
 fignew=figure('Name','t-SNE with Kmeans clustering');
-gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,cmap(KMEANSplot,:),'.',1,'doleg', 'off')
-
+fig=scatter(TSNEplot(:,1),TSNEplot(:,2),1,cmap(KMEANSplot,:))
+hLeg = legend('fig');
+set(hLeg,'visible','off');
 hold 'on'
 
 
@@ -112,6 +113,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1,'doleg', 'off')
 hold 'on'
 
 gscatter(TSNEplot(isFemale_rem_cop==1,1),TSNEplot(isFemale_rem_cop==1,2),KMEANSplot(isFemale_rem_cop==1,1),gray,'.',1,'doleg', 'off')
+
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -135,8 +137,9 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata_rem_cop.Encircling==1,1),TSNEplot(jaabadata_rem_cop.Encircling==1,2),KMEANSplot(jaabadata_rem_cop.Encircling==1,1),cmap(KMEANSplot(jaabadata_rem_cop.Encircling==1,1),:),'.',1,'doleg', 'off')
-
+fig=scatter(TSNEplot(jaabadata_rem_cop.Encircling==1,1),TSNEplot(jaabadata_rem_cop.Encircling==1,2),1,cmap(KMEANSplot(jaabadata_rem_cop.Encircling==1,1),:))
+hLeg = legend('fig');
+set(hLeg,'visible','off');
 
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
@@ -160,7 +163,9 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata_rem_cop.Facing==1,1),TSNEplot(jaabadata_rem_cop.Facing==1,2),KMEANSplot(jaabadata_rem_cop.Facing==1,1),cmap(KMEANSplot(jaabadata_rem_cop.Facing==1,1),:),'.',1,'doleg', 'off')
+fig =gscatter(TSNEplot(jaabadata_rem_cop.Facing==1,1),TSNEplot(jaabadata_rem_cop.Facing==1,2),1,cmap(KMEANSplot(jaabadata_rem_cop.Facing==1,1),:))
+hLeg = legend('fig');
+set(hLeg,'visible','off');
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -181,7 +186,9 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata_rem_cop.WingGesture==1,1),TSNEplot(jaabadata_rem_cop.WingGesture==1,2),KMEANSplot(jaabadata_rem_cop.WingGesture==1,1),cmap(KMEANSplot(jaabadata_rem_cop.WingGesture==1,1),:),'.',1,'doleg', 'off')
+fig=scatter(TSNEplot(jaabadata_rem_cop.WingGesture==1,1),TSNEplot(jaabadata_rem_cop.WingGesture==1,2),1,cmap(KMEANSplot(jaabadata_rem_cop.WingGesture==1,1),:))
+hLeg = legend('fig');
+set(hLeg,'visible','off');
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -202,7 +209,9 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata_rem_cop.Copulation==1,1),TSNEplot(jaabadata_rem_cop.Copulation==1,2),KMEANSplot(jaabadata_rem_cop.Copulation==1,1),cmap(KMEANSplot(jaabadata_rem_cop.Copulation==1,1),:),'.',1,'doleg', 'off')
+fig=scatter(TSNEplot(jaabadata_rem_cop.Copulation==1,1),TSNEplot(jaabadata_rem_cop.Copulation==1,2),1,cmap(KMEANSplot(jaabadata_rem_cop.Copulation==1,1),:))
+hLeg = legend('fig');
+set(hLeg,'visible','off');
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -220,7 +229,9 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata_rem_cop.Approaching==1,1),TSNEplot(jaabadata_rem_cop.Approaching==1,2),KMEANSplot(jaabadata_rem_cop.Approaching==1,1),cmap(KMEANSplot(jaabadata_rem_cop.Approaching==1,1),:),'.',1,'doleg', 'off')
+fig=scatter(TSNEplot(jaabadata_rem_cop.Approaching==1,1),TSNEplot(jaabadata_rem_cop.Approaching==1,2),1,cmap(KMEANSplot(jaabadata_rem_cop.Approaching==1,1),:),'.',1,'doleg', 'off')
+hLeg = legend('fig');
+set(hLeg,'visible','off');
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -241,7 +252,9 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata_rem_cop.Turning==1,1),TSNEplot(jaabadata_rem_cop.Turning==1,2),KMEANSplot(jaabadata_rem_cop.Turning==1,1),cmap(KMEANSplot(jaabadata_rem_cop.Turning==1,1),:),'.',1,'doleg', 'off')
+fig = scatter(TSNEplot(jaabadata_rem_cop.Turning==1,1),TSNEplot(jaabadata_rem_cop.Turning==1,2),1,cmap(KMEANSplot(jaabadata_rem_cop.Turning==1,1),:))
+hLeg = legend('fig');
+set(hLeg,'visible','off');
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -260,7 +273,9 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1,'doleg', 'off')
 
 hold 'on'
 
-gscatter(TSNEplot(jaabadata_rem_cop.Contact==1,1),TSNEplot(jaabadata_rem_cop.Contact==1,2),KMEANSplot(jaabadata_rem_cop.Contact==1,1),cmap(KMEANSplot(jaabadata_rem_cop.Contact==1,1),:),'.',1,'doleg', 'off')
+fig = scatter(TSNEplot(jaabadata_rem_cop.Contact==1,1),TSNEplot(jaabadata_rem_cop.Contact==1,2),1,cmap(KMEANSplot(jaabadata_rem_cop.Contact==1,1),:))
+hLeg = legend('fig');
+set(hLeg,'visible','off');
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -273,13 +288,16 @@ end
 
 for g = 1:size(genotypes)
     genotype = genotypes(g);
+    disp(genotype)
     
     fignew=figure('Name',strcat('t-SNE with Kmeans clustering and genotype',num2str(genotype)));
-    gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1,'doleg', 'off')
+    gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1)
     
     hold 'on'
     
-    gscatter(TSNEplot(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2))==genotype,1),TSNEplot(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2))==genotype,2),KMEANSplot(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2))==genotype,1),cmap(KMEANSplot(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2))==genotype,1),:),'.',1,'doleg', 'off')
+    fig =scatter(TSNEplot(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2))==genotype,1),TSNEplot(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2))==genotype,2),1,cmap(KMEANSplot(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2))==genotype),:))
+    hLeg = legend('fig')
+    set(hLeg,'visible','off')
     xlabel 't-SNE 1'
     ylabel 't-SNE 2'
     
