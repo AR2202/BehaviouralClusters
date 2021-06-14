@@ -43,7 +43,9 @@ for f=1:numel(filelist)
 arguments=varargin;
 options = struct('both',true,'female',true,'k',10,'kmin',1,...
     'kmax',50,'maxiter',1000,'framerate',25,'framesperfly',22500,...
-    'numfeatures',11,'numpcs',7,'replicates',3,'perplexity',50,'theta',0.5,'exaggeration',5,'includewavelet',true);
+    'numfeatures',11,'numpcs',7,'replicates',3,'perplexity',50,'theta',...
+    0.5,'exaggeration',5,'includewavelet',true,...
+    'morletfreq',[0.5,1,2,4,6,8,10,12]);
 
 %call the options_resolver function to check optional key-value pair
 %arguments
@@ -63,6 +65,7 @@ perplexity = options.perplexity;
 theta = options.theta;
 exaggeration = options.exaggeration;
 includewavelet = options.includewavelet;
+morlet_frequencies = options.morletfreq;
 
 
 %loading data
@@ -149,7 +152,7 @@ numflies = size(PCAscores_reshaped,1);
 %requires their MotionMapper package
 %https://github.com/gordonberman/MotionMapper
 
-morlet_frequencies=[2,4,6,8,10,12]; %6 evenly spaced frequencies,
+%morlet_frequencies=[0.5,1,2,4,6,8,10,12]; %8 ~ evenly spaced frequencies,
 %the largest being the Nyquist frequency
 wavelets = zeros(size(PCAscores_reshaped,1),size(PCAscores_reshaped,2),length(morlet_frequencies)*numpcs);
 amp = zeros(length(morlet_frequencies)*numpcs,length(PCAscores_reshaped));
@@ -159,7 +162,7 @@ samplingrate = 1/framerate;
 for fly = 1:numflies
     data = reshape(PCAscores_reshaped(fly,:,:),size(PCAscores_reshaped,2),size(PCAscores_reshaped,3));
     for i=1:numpcs
-        [amp(6*(i-1)+1:6*i,:),~] = fastWavelet_morlet_convolution_parallel(data(:,i),morlet_frequencies,omega,samplingrate);
+        [amp(length(morlet_frequencies)*(i-1)+1:length(morlet_frequencies)*i,:),~] = fastWavelet_morlet_convolution_parallel(data(:,i),morlet_frequencies,omega,samplingrate);
     end
     wavelets(fly,:,:) = transpose(amp);
 end

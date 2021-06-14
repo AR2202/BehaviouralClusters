@@ -23,7 +23,7 @@ data_other_fly=[];
 data_selected=feat.data(idlist,:,[1:6,9:13]);
 filledmissing = fillmissing(data_selected,'linear');
 lengthdata = size(filledmissing,1) *(size(filledmissing,2));
-data_reshaped = reshape(filledmissing,lengthdata,11);
+data_reshaped = reshape(permute(filledmissing,[2 1 3]),lengthdata,11);
 %find ids of partner fly
 otherFlyIds = arrayfun(@(id) otherid(id), idlist);
 if includeOtherFly
