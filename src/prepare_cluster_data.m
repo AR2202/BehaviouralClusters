@@ -30,7 +30,7 @@ if includeOtherFly
     data_other_fly = feat.data(otherFlyIds,:,[1:6,9:13]);
     filledmissingOtherFly = fillmissing(data_other_fly,'linear');
     lengthdataOther = size(filledmissingOtherFly,1) *(size(filledmissingOtherFly,2));
-    reshaped_other = reshape(filledmissingOtherFly,lengthdataOther,11);
+    reshaped_other = reshape(permute(filledmissingOtherFly,[2 1 3]),lengthdataOther,11);
 else
     reshaped_other =[];
 end

@@ -142,9 +142,9 @@ end
 
 %Prepare PCAscores for Morlet wavelet transform
 combrescaled = [combrescaled comb(:,size(comb,2))];
-PCAscores_reshaped = reshape(PCAscores,[],framesPerFly,numfeatures);
+%PCAscores_reshaped = reshape(PCAscores,[],framesPerFly,numfeatures);
 
-numflies = size(PCAscores_reshaped,1);
+numflies = length(combrescaled)/framesPerFly;
 
 %Morlet Wavelet transforms
 %according to Berman et al. 2014
@@ -154,25 +154,26 @@ numflies = size(PCAscores_reshaped,1);
 
 %morlet_frequencies=[0.5,1,2,4,6,8,10,12]; %8 ~ evenly spaced frequencies,
 %the largest being the Nyquist frequency
-wavelets = zeros(size(PCAscores_reshaped,1),size(PCAscores_reshaped,2),length(morlet_frequencies)*numpcs);
-amp = zeros(length(morlet_frequencies)*numpcs,length(PCAscores_reshaped));
+wavelets = zeros(numflies,framesPerFly,length(morlet_frequencies)*numpcs);
+amp = zeros(length(morlet_frequencies)*numpcs,framesPerFly);
 omega = 5;
 samplingrate = 1/framerate;
 
 for fly = 1:numflies
-    data = reshape(PCAscores_reshaped(fly,:,:),size(PCAscores_reshaped,2),size(PCAscores_reshaped,3));
+    %data_old = reshape(PCAscores_reshaped(fly,:,:),size(PCAscores_reshaped,2),size(PCAscores_reshaped,3));
+    data = reshape(PCAscores(1+(fly-1)*framesPerFly:fly*framesPerFly,:),framesPerFly,size(PCAscores,2));
     for i=1:numpcs
         [amp(length(morlet_frequencies)*(i-1)+1:length(morlet_frequencies)*i,:),~] = fastWavelet_morlet_convolution_parallel(data(:,i),morlet_frequencies,omega,samplingrate);
     end
     wavelets(fly,:,:) = transpose(amp);
 end
-wavelets_reshaped = reshape(wavelets,(size(wavelets,1)*size(wavelets,2)),size(wavelets,3));
+wavelets_reshaped = reshape(permute(wavelets, [2 1 3]),(size(wavelets,1)*size(wavelets,2)),size(wavelets,3));
 
 %remove copulation frames
 
 isCopulationframe = jaabadata.Copulation;
 isCopulationframe = [isCopulationframe; zeros( length(combrescaled) - length(isCopulationframe),1)];
-isCopulationframe_reshaped = reshape(isCopulationframe,[],framesPerFly);
+isCopulationframe_reshaped = transpose(reshape(isCopulationframe,framesPerFly,[]));
 for i=1:numflies
     tmp_data=isCopulationframe_reshaped(:,i);
     tmp_data=movmean(tmp_data,1250)>0.5;
@@ -181,7 +182,7 @@ for i=1:numflies
     tmp_data(1:copstart)=0;
     isCopulationframe_reshaped(:,i)=tmp_data;
 end
-isCopulationframe = reshape(isCopulationframe_reshaped,(size(isCopulationframe_reshaped,1)*size(isCopulationframe_reshaped,2)),1);
+isCopulationframe = reshape(permute(isCopulationframe_reshaped, [2 1 3]),(size(isCopulationframe_reshaped,1)*size(isCopulationframe_reshaped,2)),1);
 wavelets_rem_cop = wavelets_reshaped(~isCopulationframe,:);
 
 PCAscores_rem_cop = PCAscores(~isCopulationframe,:);
