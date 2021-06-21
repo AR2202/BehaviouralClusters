@@ -43,6 +43,9 @@ for i = 1:numel(scores)
     if includeOtherFly
         data_subset_other = arrayfun(@(id) allScores.postprocessed{id},...
             otherFlyIds,'UniformOutput',false);
+        expand_data_to_framesperfly_other = cellfun(@(indiv)[indiv, zeros(1,...
+        framesperfly-length(indiv))],...
+        data_subset_other,'uni',false);
         data_mat_other = transpose(cell2mat(data_subset_other));
     end
     if sex == 'f'
