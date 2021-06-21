@@ -163,7 +163,7 @@ gscatter(TSNEplot(:,1),TSNEplot(:,2),KMEANSplot,grayscale,'.',1,'doleg', 'off')
 
 hold 'on'
 
-fig =gscatter(TSNEplot(jaabadata_rem_cop.Facing==1,1),TSNEplot(jaabadata_rem_cop.Facing==1,2),1,cmap(KMEANSplot(jaabadata_rem_cop.Facing==1,1),:))
+fig =scatter(TSNEplot(jaabadata_rem_cop.Facing==1,1),TSNEplot(jaabadata_rem_cop.Facing==1,2),1,cmap(KMEANSplot(jaabadata_rem_cop.Facing==1,1),:))
 hLeg = legend('fig');
 set(hLeg,'visible','off');
 xlabel 't-SNE 1'
