@@ -3,7 +3,7 @@
 function [maleData,femaleData]=prepare_cluster_data(filename,idlist,varargin)
 %check for optional key-value-pair arguments
 arguments=varargin;
- options = struct('sex','f','includeotherfly',true);
+options = struct('sex','f','includeotherfly',true);
 %call the options_resolver function to check optional key-value pair
 %arguments
 [options,~]=options_resolver(options,arguments,'prepare_cluster_data');
@@ -45,4 +45,4 @@ end
 
 
 
-    
+
