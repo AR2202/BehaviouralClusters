@@ -22,9 +22,12 @@ filename_nuvea_nuvea = 'nueva_female_intraspecific.xlsx';
 filename_praslin_praslin = 'Praslin_female_intraspecific.xlsx';
 filename_praslin_nuvea = 'Praslin_female_x_nueva_male.xlsx';
 filename_nuvea_praslin = 'Nueva_female_x_Praslin_male.xlsx';
+filename_praslin_a2a2b = 'Praslin_female_x_a2a2b_male.xlsx';
+filename_a2a2b_praslin = 'A2A2B_female_x_Praslin_male.xlsx';
 filenames = {filename_a2a2b_a2a2b,filename_sech13_sech13,...
     filename_a2a2b_sech13,filename_sech13_a2a2b,filename_nuvea_nuvea,...
-    filename_praslin_praslin,filename_praslin_nuvea,filename_nuvea_praslin};
+    filename_praslin_praslin,filename_praslin_nuvea,...
+    filename_nuvea_praslin,filename_a2a2b_praslin,filename_praslin_a2a2b};
 
 cd (datapath);
 %run the pausing function
