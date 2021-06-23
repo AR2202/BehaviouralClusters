@@ -106,10 +106,10 @@ for p = 1:numel(dirs)
                     if exist ('allJAABADataMale','var')
                         scorenames_existing_data = fieldnames(allJAABADataMale);
                         for score = 1:length(scorenames_existing_data)
-                            scorename = scorenames_existing_data(score);
+                            scorename = scorenames_existing_data{score};
                             if ~contains(scorenames_m, scorename)
                                 
-                                jaabadata_male.(scorename) = zeros(1,framesPerFly);
+                                jaabadata_male.(scorename) = zeros(framesPerFly,1);
                             end
                         end
                         for score = 1:length(scorenames_m)
@@ -134,11 +134,11 @@ for p = 1:numel(dirs)
                         scorenames_existing_data = ...
                             fieldnames(allJAABADataFemale);
                         for score = 1:length(scorenames_existing_data)
-                            scorename = scorenames_existing_data(score);
+                            scorename = scorenames_existing_data{score};
                             if ~contains(scorenames_f, scorename)
                                 
                                 jaabadata_female.(scorename) = ...
-                                    zeros(1,framesPerFly);
+                                    zeros(framesPerFly,1);
                             end
                         end
                         for score = 1:length(scorenames_f)
