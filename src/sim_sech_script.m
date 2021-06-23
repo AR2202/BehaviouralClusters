@@ -19,7 +19,7 @@ filename_sech13_sech13 = 'sech13females_intraspecific.xlsx';
 filename_a2a2b_sech13 = 'a2a2b_female_interspecific.xlsx';
 filename_sech13_a2a2b = 'sech13_female_interspecific.xlsx';
 filename_nuvea_nuvea = 'nueva_female_intraspecific.xlsx';
-filename_praslin_praslin = 'Praslin_female_intraspecific.xlsx';
+filename_praslin_praslin = 'Praslin_female_intraspecific_del_missing.xlsx';
 filename_praslin_nuvea = 'Praslin_female_x_nueva_male.xlsx';
 filename_nuvea_praslin = 'Nueva_female_x_Praslin_male.xlsx';
 filename_praslin_a2a2b = 'Praslin_female_x_a2a2b_male.xlsx';
@@ -76,7 +76,7 @@ for filenumber = 1:length(filenames)
     %jaaba data not included because there are some missing data - can be
     %updated once the tracking has produced all jaaba data
     find_videos_clustering(genotypelist,genotype,...
-        'includeotherfly',false,'includejaabadata',false);
+        'includeotherfly',false);
 end
 %perform clustering with 7 principle components
 disp('Now running clustering with 7 PCs...');
