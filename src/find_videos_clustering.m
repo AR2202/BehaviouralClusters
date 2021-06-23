@@ -113,12 +113,12 @@ for p = 1:numel(dirs)
                             end
                         end
                         for score = 1:length(scorenames_m)
-                            scorename = scorenames_m(score);
+                            scorename = scorenames_m{score};
                             if ~contains(scorenames_existing_data, scorename)
                                 
                                 allJAABADataMale.(scorename) = ...
-                                    zeros(1,...
-                                    length(allJAABADataMale.(scorenames_existing_data(1))));
+                                    zeros(...
+                                    length(allJAABADataMale.(scorenames_existing_data{1})),1);
                             end
                         end
                         allJAABADataMale = cell2struct(cellfun(@vertcat,...
@@ -142,12 +142,12 @@ for p = 1:numel(dirs)
                             end
                         end
                         for score = 1:length(scorenames_f)
-                            scorename = scorenames_f(score);
+                            scorename = scorenames_f{score};
                             if ~contains(scorenames_existing_data, scorename)
                                 
                                 allJAABADataFemale.(scorename) = ...
-                                    zeros(1,...
-                                    length(allJAABADataFemale.(scorenames_existing_data(1))));
+                                    zeros(...
+                                    length(allJAABADataFemale.(scorenames_existing_data{1})),1);
                             end
                         end
                         allJAABADataFemale = cell2struct(cellfun(@vertcat,...
