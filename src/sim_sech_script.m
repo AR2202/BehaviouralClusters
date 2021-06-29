@@ -76,7 +76,7 @@ for filenumber = 1:length(filenames)
     %jaaba data not included because there are some missing data - can be
     %updated once the tracking has produced all jaaba data
     find_videos_clustering(genotypelist,genotype,...
-        'includeotherfly',false);
+        'includeotherfly',false, 'includejaabadata',false);
 end
 %perform clustering with 7 principle components
 disp('Now running clustering with 7 PCs...');
