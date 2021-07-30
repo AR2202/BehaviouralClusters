@@ -174,6 +174,7 @@ PCAscores_rownumber_appended = [PCAscores_rem_cop transpose([1:length(PCAscores_
 genotypes = unique(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2)));
 numgenotypes = length(genotypes);
 KMEANS_pca_rep = zeros(subsamplesize*numgenotypes,repeats);
+centroids_pca_rep = zeros(k,numpcs,repeats);
 PCAscores_subsampled = zeros(subsamplesize*numgenotypes,size(PCAscores_rownumber_appended,2));
 PCAscores_subsampled_rep = zeros(subsamplesize*numgenotypes,size(PCAscores_rownumber_appended,2),repeats);
 %KMEANS with user-specified k  repeats
@@ -187,9 +188,10 @@ for i=1:repeats
         datasample(PCAscores_genotype,subsamplesize,1);
     end
 options = statset('UseParallel',1);
-KMEANS_pca = kmeans(PCAscores_subsampled(:,1:numpcs),...
+[KMEANS_pca,centroids_pca] = kmeans(PCAscores_subsampled(:,1:numpcs),...
     k,'Options',options,'MaxIter',maxiter);
 KMEANS_pca_rep(:,i) = KMEANS_pca;
+centroids_pca_rep(:,:,i) = centroids_pca;
 PCAscores_subsampled_rep(:,:,i)=PCAscores_subsampled;
 end
 
@@ -202,5 +204,5 @@ end
 
     save(outfilename,'PCAcoeff','PCAscores', 'PCAscores_subsampled_rep',...
         'KMEANS_pca_rep','comb','combrescaled','jaabadata','isFemale',...
-        'isFemale_rem_cop','k','explained',...
+        'isFemale_rem_cop','k','explained','centroids_pca_rep',...
         'PCAscores_rem_cop','combrescaled_rem_cop','jaabadata_rem_cop')
