@@ -167,10 +167,13 @@ for i = 1:numel(fields)
     jaabadata_rem_cop.(fields{i}) = ...
         jaabadata.(fields{i})(~isCopulationframe(1:length(jaabadata.Copulation)));
 end
-
+%append genotype to keep track of them after subsampling
+PCAscores_genotype_appended = [PCAscores_rem_cop combrescaled_rem_cop(:,12)];
 %append row number to PCAscores to keep track of which row was randomly
 %selected
-PCAscores_rownumber_appended = [PCAscores_rem_cop transpose([1:length(PCAscores_rem_cop)])];
+
+PCAscores_rownumber_appended = [PCAscores_genotype_appended transpose([1:length(PCAscores_genotype_appended)])];
+
 genotypes = unique(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2)));
 numgenotypes = length(genotypes);
 KMEANS_pca_rep = zeros(subsamplesize*numgenotypes,repeats);
