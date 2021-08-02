@@ -11,7 +11,7 @@ for g = 1:length(genotypes)
     
     for clusternumber = 1:K
         clusterdata = ...
-            combrescaled_rem_cop(KMEANS==clusternumber,size(data,2));
+            data(KMEANS==clusternumber,size(data,2));
         total_in_cluster = size(clusterdata,1);
         genotype_in_cluster = ...
             size(clusterdata(clusterdata == genotype),1);

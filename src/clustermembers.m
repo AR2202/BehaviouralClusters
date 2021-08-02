@@ -37,31 +37,10 @@ else
     
 end
 colormap cool;
-genotypes = unique(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2)));
-frac = zeros(K,length(genotypes));
-absolute = zeros(K,length(genotypes));
+[frac,absolute,frac_genotype] = ...
+    genotypes_in_cluster(combrescaled_rem_cop,K,KMEANSplot);
 
-frac_genotype = zeros(K,length(genotypes));
-for g = 1:length(genotypes)
-    genotype = genotypes(g);
-    frames_in_genotype = ...
-        length(combrescaled_rem_cop(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2)) == genotype,size(combrescaled_rem_cop,2)));
-    
-    for clusternumber = 1:K
-        clusterdata = ...
-            combrescaled_rem_cop(KMEANSplot==clusternumber,size(combrescaled_rem_cop,2));
-        total_in_cluster = size(clusterdata,1);
-        genotype_in_cluster = ...
-            size(clusterdata(clusterdata == genotype),1);
-      
-        frac(clusternumber,g) = genotype_in_cluster/total_in_cluster;
-        absolute(clusternumber,g) = genotype_in_cluster;
-        frac_genotype(clusternumber,g) = genotype_in_cluster/frames_in_genotype;
-        
-        
-    end
-    
-end
+
 %plotting
  for clusternumber = 1:K
     frac_cluster = frac(clusternumber,:);
