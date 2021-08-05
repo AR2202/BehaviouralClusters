@@ -1,5 +1,5 @@
-function clusternumbers = clusterdistances(filename)
-load(filename);
+function clusternumbers = clusterdistances(centroids_pca_rep,k)
+
 first_run  = centroids_pca_rep(:,:,1);
 numclusters = size(centroids_pca_rep,1);
 numclosest = k;
@@ -10,7 +10,7 @@ clusternumbers(:,1)=1:numclusters;
 
 for i = 2:size(centroids_pca_rep,3)
     Y = centroids_pca_rep(:,:,i);
-    %find the 'numclusest' clusters in first_run with the smallest centroid distance to clusters in
+    %find the 'numclosest' clusters in first_run with the smallest centroid distance to clusters in
     %the ith run
     [~,closest_clusters] = pdist2(first_run,Y,'euclidean','Smallest',numclosest);
     closest(:,:,i-1)=closest_clusters;

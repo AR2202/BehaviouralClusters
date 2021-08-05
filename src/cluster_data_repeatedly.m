@@ -167,26 +167,27 @@ for i = 1:numel(fields)
     jaabadata_rem_cop.(fields{i}) = ...
         jaabadata.(fields{i})(~isCopulationframe(1:length(jaabadata.Copulation)));
 end
-%append genotype to keep track of them after subsampling
-PCAscores_genotype_appended = [PCAscores_rem_cop combrescaled_rem_cop(:,12)];
+
 %append row number to PCAscores to keep track of which row was randomly
 %selected
 
-PCAscores_rownumber_appended = [PCAscores_genotype_appended transpose([1:length(PCAscores_genotype_appended)])];
+PCAscores_rownumber_appended = [PCAscores_rem_cop transpose([1:length(PCAscores_rem_cop)])];
+%append genotype to keep track of them after subsampling
+PCAscores_genotype_appended = [PCAscores_rownumber_appended combrescaled_rem_cop];
 
 genotypes = unique(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2)));
 numgenotypes = length(genotypes);
 KMEANS_pca_rep = zeros(subsamplesize*numgenotypes,repeats);
 centroids_pca_rep = zeros(k,numpcs,repeats);
-PCAscores_subsampled = zeros(subsamplesize*numgenotypes,size(PCAscores_rownumber_appended,2));
-PCAscores_subsampled_rep = zeros(subsamplesize*numgenotypes,size(PCAscores_rownumber_appended,2),repeats);
+PCAscores_subsampled = zeros(subsamplesize*numgenotypes,size(PCAscores_genotype_appended,2));
+PCAscores_subsampled_rep = zeros(subsamplesize*numgenotypes,size(PCAscores_genotype_appended,2),repeats);
 %KMEANS with user-specified k  repeats
 for i=1:repeats
     %random selection of data
     for g = 1:numgenotypes
     genotype = genotypes(g);
     PCAscores_genotype = ...
-        PCAscores_rownumber_appended(combrescaled_rem_cop(:,size(combrescaled_rem_cop,2)) == genotype,:);
+        PCAscores_genotype_appended(PCAscores_genotype_appended(:,size(PCAscores_genotype_appended,2)) == genotype,:);
     PCAscores_subsampled((g-1)*subsamplesize+1:g*subsamplesize,:) = ...
         datasample(PCAscores_genotype,subsamplesize,1);
     end
@@ -208,4 +209,4 @@ end
     save(outfilename,'PCAcoeff','PCAscores', 'PCAscores_subsampled_rep',...
         'KMEANS_pca_rep','comb','combrescaled','jaabadata','isFemale',...
         'isFemale_rem_cop','k','explained','centroids_pca_rep',...
-        'PCAscores_rem_cop','combrescaled_rem_cop','jaabadata_rem_cop')
+        'PCAscores_rem_cop','combrescaled_rem_cop','jaabadata_rem_cop','numfeatures', '-v7.3')
