@@ -23,4 +23,4 @@ for f = 1:numfeatures
 end
 %Bonferroni correction for number of features and clusters
 pvalues=pvalues*(numfeatures*numsigclusters);
-significant_cluster_features = pvalues<0.001;
+significant_cluster_features = pvalues<0.0001;

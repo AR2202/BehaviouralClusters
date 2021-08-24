@@ -1,5 +1,6 @@
-function [pvalues_features,times_average,significant_cluster_features,genotype1_biased,genotype2_biased,pvalues,frac_rep,absolute_rep,frac_genotype_rep] = clustermembers_repeated(filename)
+function [pvalues_features,times_average,significant_cluster_features,genotype1_biased,genotype2_biased,significantClusters,pvalues,frac_rep,absolute_rep,frac_genotype_rep] = clustermembers_repeated(filename)
 load(filename)
+outfilename = strrep(filename,'.mat','_clustermembers.mat');
 clusternumbers = clusterdistances(centroids_pca_rep,k);
 KMEANS_clustersnumbers = zeros(size(KMEANS_pca_rep));
 repeats = size(KMEANS_pca_rep,2);
@@ -26,8 +27,11 @@ pvalues(cluster) = p;
 
 end
 pvalues=pvalues*k;
-significantClusters = find(pvalues<0.001);
-numfeatures=11;
+significantClusters = find(pvalues<0.0001);
+
 genotype1_biased = significantClusters((frac_genotype_rep(significantClusters,1,1)>frac_genotype_rep(significantClusters,2,1)));
 genotype2_biased = significantClusters((frac_genotype_rep(significantClusters,2,1)>frac_genotype_rep(significantClusters,1,1)));
 [pvalues_features, times_average, significant_cluster_features] = features_in_clusters(PCAscores_subsampled_rep,KMEANS_clustersnumbers,significantClusters,numfeatures);
+clusterfrac = mean(frac_genotype_rep,3);
+clusterfrac_total = clusterfrac(:,1) + clusterfrac(:,2);
+save(outfilename, 'pvalues_features','times_average','significant_cluster_features','genotype1_biased','genotype2_biased','significantClusters','pvalues','frac_rep','absolute_rep','frac_genotype_rep','clusterfrac_total');
