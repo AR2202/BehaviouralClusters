@@ -16,7 +16,7 @@ function cluster_data_repeatedly(filelist, outfilename, varargin)
 %%%both: whether male and female data should be used; default: true
 %%%female: if both is false, whether female data should be used; default:
 %%%false
-%%%k: the k for the fixed-k k-means default: 10
+%%%k: the k for the fixed-k k-means default: 20
 
 %%%maxiter: maximum iterations for k-means
 %%%framerate: video framerate; default: 25

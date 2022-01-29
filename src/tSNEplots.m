@@ -61,7 +61,7 @@ genotypes = unique(combrescaled_rem_cop(:, size(combrescaled_rem_cop, 2)));
 %     0.8 1 0.4
 %     0.3 0.2 0.5
 % ]
-cmap = prism;
+cmap = lines;
 grayscale = flipud(gray);
 %---------------------
 
