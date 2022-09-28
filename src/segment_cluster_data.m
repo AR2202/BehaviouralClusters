@@ -1,7 +1,8 @@
 function segmented_data = segment_cluster_data(data, framesPerFly, maxchangepts)
+%data need to be normalized/scaled first
 numflies = length(data) / framesPerFly;
 segmented_data = [];
-changepoints = zeros(numflies, maxchangepts);
+changepoints = zeros(numflies, maxchangepts+1);
 for i = 1:numflies
     tmp_data = transpose(data((i - 1)*framesPerFly+1:i*framesPerFly, :));
     ipt = findchangepts(tmp_data, 'MaxNumChanges', maxchangepts);
