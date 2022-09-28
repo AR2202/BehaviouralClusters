@@ -43,7 +43,7 @@ for f = 1:numel(filelist)
 
     %call the options_resolver function to check optional key-value pair
     %arguments
-    [options, ~] = options_resolver(options, arguments, 'cluster_data');
+    [options, ~] = options_resolver(options, arguments, 'cluster_data_repeatedly');
 
     %setting the values for optional arguments
     both = options.both;
