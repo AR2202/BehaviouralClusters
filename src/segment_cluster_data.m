@@ -1,34 +1,51 @@
-function segmented_data = segment_cluster_data(data, framesPerFly, maxchangepts)
-%data need to be normalized/scaled first
+function segmented_data = segment_cluster_data(data, framesPerFly,...
+    numfeatures, maxchangepts, avg_pts, downsample_intv)
+numfeatures = min(numfeatures, size(data, 2));
+disp('number of features used:');
+disp(numfeatures);
+
 numflies = length(data) / framesPerFly;
 segmented_data = [];
 changepoints = zeros(numflies, maxchangepts+1);
+colmin = min(data(:, 1:numfeatures));
+colmax = max(data(:, 1:numfeatures));
+rescaled = rescale(data(:, 1:numfeatures), 'InputMin', colmin, ...
+    'InputMax', colmax);
+
+
 for i = 1:numflies
-    tmp_data = transpose(data((i - 1)*framesPerFly+1:i*framesPerFly, :));
-    ipt = findchangepts(tmp_data, 'MaxNumChanges', maxchangepts);
-    ipt = [ipt, framesPerFly];
+    tmp_data = rescaled((i - 1)*framesPerFly+1:i*framesPerFly, :);
+    moving_av = movmean(tmp_data, avg_pts);
+    downsampled = downsample(moving_av, downsample_intv);
+    downsampled = transpose(downsampled);
+
+    ipt = findchangepts(downsampled, 'MaxNumChanges', maxchangepts);
+    ipt = [ipt, ceil(framesPerFly/downsample_intv)];
 
     changepoints(i, 1:length(ipt)) = ipt;
 
 end
-maxlength = max(max(diff(changepoints, 2)));
+%maxlength = max(max(diff(changepoints, 2)));
+maxlength = round(median(median(diff(changepoints, 1,2))));
 
 for i = 1:numflies
-    tmp_data = data((i - 1)*framesPerFly+1:i*framesPerFly, :);
+    tmp_data = rescaled((i - 1)*framesPerFly+1:i*framesPerFly, :);
+     moving_av = movmean(tmp_data, avg_pts);
+    downsampled = downsample(moving_av, downsample_intv);
     changepoints_tmp = changepoints(i, :);
     changepoints_tmp = changepoints_tmp(changepoints_tmp > 0);
 
     numchangepoints = length(changepoints_tmp);
-    segmented_tmp = zeros(numchangepoints, maxlength*size(data, 2)+3);
+    segmented_tmp = zeros(numchangepoints, maxlength*size(downsampled, 2)+3);
     last = 1;
     for j = 1:numchangepoints
-        eventlength = changepoints_tmp(j) - last;
-        for k = 1:size(data, 2)
+        eventlength = min(maxlength,changepoints_tmp(j) - last);
+        for k = 1:size(downsampled, 2)
             segmented_tmp(j, (k - 1)*maxlength+1:(k - 1)*maxlength + eventlength) = ...
-                tmp_data(last:changepoints_tmp(j)-1, k);
+                downsampled(last:last+eventlength-1, k);
             segmented_tmp(j, end-2) = i;
-            segmented_tmp(j, end-1) = last;
-            segmented_tmp(j, end) = changepoints_tmp(j) - 1;
+            segmented_tmp(j, end-1) = (last - 1) * downsample_intv + 1;
+            segmented_tmp(j, end) = (changepoints_tmp(j) - 2) * downsample_intv + 1;
         end
         last = changepoints_tmp(j);
     end
