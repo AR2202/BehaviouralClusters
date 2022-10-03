@@ -66,6 +66,7 @@ for f = 1:numel(filelist)
     maxchangepts = options.maxchangepts;
     avg_pts = options.avg_pts;
     downsample_intv = options.downsample_intv;
+    numpcs = options.numpcs;
 
 
     %loading data
@@ -118,9 +119,7 @@ end
 numfeatures = min(options.numfeatures, size(comb, 2));
 disp('number of features used:');
 disp(numfeatures);
-numpcs = min(options.numpcs, size(comb, 2));
-disp('number of principle components used:');
-disp(numpcs);
+
 %isFemale
 isFemale = zeros(length(comb), 1);
 if both || female
@@ -131,13 +130,14 @@ opts.early_exag_coeff = exaggeration;
 opts.perplexity = perplexity;
 opts.theta = theta;
 %segment data
-segmented = segment_cluster_data(comb, framesPerFly, ...
+[segmented, isFemale_segmented] = segment_cluster_data(comb, isFemale, framesPerFly, ...
     numfeatures, maxchangepts, avg_pts,downsample_intv);
 %cluster data
 [PCAscores, explained, KMEANS_pca, TSNE] = cluster_segmented(segmented(:,1:end-4),...
     numpcs, k, opts);
+
 %save data to file
  save(outfilename, 'TSNE',  'PCAscores', ...
         'KMEANS_pca',  'comb',  'jaabadata', 'isFemale', ...
-         'k', ...
+         'k', 'segmented', 'isFemale_segmented', ...
          'explained')

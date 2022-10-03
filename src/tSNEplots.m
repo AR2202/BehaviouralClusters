@@ -1,4 +1,4 @@
-function tSNEplots(filename, outputname, wavelet, opt, withJAABA)
+function tSNEplots(filename, outputname, wavelet, opt, withJAABA, data_segmented)
 %%%This function is for plotting tSNE with different JAABA classifiers
 %%%The arguments are:
 %%%
@@ -12,24 +12,35 @@ load(filename);
 if wavelet
     if opt
         KMEANSplot = KMEANS_opt_wavelet;
+        K = K_wavelet;
 
     else
 
         KMEANSplot = KMEANS_wavelet;
+        K = k;
     end
     TSNEplot = TSNE_wavelet;
 
 else
     if opt
         KMEANSplot = KMEANS_opt_pca;
+        K = K_pca;
 
     else
         KMEANSplot = KMEANS_pca;
+        K = k;
     end
     TSNEplot = TSNE;
 
 end
+if data_segmented
+    genotypes = unique(segmented(:, end-3));
+    is_Female_var = isFemale_segmented;
+    
+else
 genotypes = unique(combrescaled_rem_cop(:, size(combrescaled_rem_cop, 2)));
+is_Female_var = isFemale_rem_cop;
+end
 % cmap = [
 %     0.2 0.1 0.5
 %     0.1 0.5 0.8
@@ -94,7 +105,7 @@ gscatter(TSNEplot(:, 1), TSNEplot(:, 2), KMEANSplot, grayscale, '.', 1, 'doleg',
 
 hold 'on'
 
-gscatter(TSNEplot(isFemale_rem_cop == 0, 1), TSNEplot(isFemale_rem_cop == 0, 2), KMEANSplot(isFemale_rem_cop == 0, 1), gray, '.', 1, 'doleg', 'off')
+gscatter(TSNEplot(is_Female_var == 0, 1), TSNEplot(is_Female_var == 0, 2), KMEANSplot(is_Female_var == 0, 1), gray, '.', 1, 'doleg', 'off')
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
 
@@ -112,7 +123,7 @@ gscatter(TSNEplot(:, 1), TSNEplot(:, 2), KMEANSplot, grayscale, '.', 1, 'doleg',
 
 hold 'on'
 
-gscatter(TSNEplot(isFemale_rem_cop == 1, 1), TSNEplot(isFemale_rem_cop == 1, 2), KMEANSplot(isFemale_rem_cop == 1, 1), gray, '.', 1, 'doleg', 'off')
+gscatter(TSNEplot(is_Female_var == 1, 1), TSNEplot(is_Female_var == 1, 2), KMEANSplot(is_Female_var == 1, 1), gray, '.', 1, 'doleg', 'off')
 
 xlabel 't-SNE 1'
 ylabel 't-SNE 2'
@@ -291,13 +302,39 @@ for g = 1:size(genotypes)
     gscatter(TSNEplot(:, 1), TSNEplot(:, 2), KMEANSplot, grayscale, '.', 1)
 
     hold 'on'
-
+if data_segmented
+     fig = scatter(TSNEplot(segmented(:,end-3) == genotype, 1), TSNEplot(segmented(:, end-3) == genotype, 2), 1, cmap(KMEANSplot(segmented(:, end-3) == genotype), :))
+else
     fig = scatter(TSNEplot(combrescaled_rem_cop(:, size(combrescaled_rem_cop, 2)) == genotype, 1), TSNEplot(combrescaled_rem_cop(:, size(combrescaled_rem_cop, 2)) == genotype, 2), 1, cmap(KMEANSplot(combrescaled_rem_cop(:, size(combrescaled_rem_cop, 2)) == genotype), :))
+end
     hLeg = legend('fig')
     set(hLeg, 'visible', 'off')
     xlabel 't-SNE 1'
     ylabel 't-SNE 2'
 
     figname = strcat('tSNE_Kmeans_genotype_', num2str(genotype), outputname, '.eps');
+    saveas(fignew, figname, 'epsc');
+end
+
+
+%------------------------------------
+%Kmeans clustering with clusters
+%----------------------------------
+
+for c = 1:K
+    
+
+    fignew = figure('Name', strcat('t-SNE with Kmeans clustering and cluster', num2str(c)));
+    gscatter(TSNEplot(:, 1), TSNEplot(:, 2), KMEANSplot, grayscale, '.', 1)
+
+    hold 'on'
+
+    fig = scatter(TSNEplot(KMEANSplot == c, 1), TSNEplot(KMEANSplot == c, 2), 1, cmap(c,:));
+    hLeg = legend('fig')
+    set(hLeg, 'visible', 'off')
+    xlabel 't-SNE 1'
+    ylabel 't-SNE 2'
+
+    figname = strcat('tSNE_Kmeans_cluster_', num2str(c), outputname, '.eps');
     saveas(fignew, figname, 'epsc');
 end

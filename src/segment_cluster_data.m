@@ -1,10 +1,11 @@
-function segmented_data = segment_cluster_data(data, framesPerFly,...
+function [segmented_data, isFemale_segmented] = segment_cluster_data(data, isFemale, framesPerFly,...
     numfeatures, maxchangepts, avg_pts, downsample_intv)
 numfeatures = min(numfeatures, size(data, 2));
 
 
 numflies = length(data) / framesPerFly;
 segmented_data = [];
+isFemale_segmented = [];
 changepoints = zeros(numflies, maxchangepts+1);
 colmin = min(data(:, 1:numfeatures));
 colmax = max(data(:, 1:numfeatures));
@@ -32,11 +33,13 @@ for i = 1:numflies
      moving_av = movmean(tmp_data, avg_pts);
     downsampled = downsample(moving_av, downsample_intv);
     genotype = data(i * framesPerFly,end);
+    is_Female = isFemale(i * framesPerFly);
     changepoints_tmp = changepoints(i, :);
     changepoints_tmp = changepoints_tmp(changepoints_tmp > 0);
 
     numchangepoints = length(changepoints_tmp);
     segmented_tmp = zeros(numchangepoints, maxlength*size(downsampled, 2)+4);
+    isFemale_tmp = zeros(numchangepoints,1);
     last = 1;
     for j = 1:numchangepoints
         eventlength = min(maxlength,changepoints_tmp(j) - last);
@@ -47,10 +50,12 @@ for i = 1:numflies
             segmented_tmp(j, end-2) = i;
             segmented_tmp(j, end-1) = (last - 1) * downsample_intv + 1;
             segmented_tmp(j, end) = (changepoints_tmp(j) - 2) * downsample_intv + 1;
+            isFemale_tmp(j,1) = is_Female;
         end
         last = changepoints_tmp(j);
     end
 
 
     segmented_data = vertcat(segmented_data, segmented_tmp);
+    isFemale_segmented = vertcat(isFemale_segmented, isFemale_tmp);
 end
